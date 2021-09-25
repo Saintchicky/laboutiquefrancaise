@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -19,23 +20,26 @@ class RegisterType extends AbstractType
         $builder
             ->add('firstname',TextType::class,[
                 'label'=>'Votre prénom',
+                'constraints'=> new Length(2,30),
                 'attr'=>[
                     'placeholder' => 'Merci de saisir votre prénom'
                 ]
             ])
             ->add('lastname',TextType::class,[
                 'label'=>'Votre nom',
+                'constraints'=> new Length(2,30),
                 'attr'=>[
                     'placeholder' => 'Merci de saisir votre nom'
                 ]
             ])
             ->add('email',EmailType::class,[
                 'label'=>'Votre email',
+                'constraints'=> new Length(2,60),
                 'attr'=>[
                     'placeholder' => 'Merci de saisir votre email'
                 ]
             ])
-            // permet de doubler les champs RepeatedType
+            // permet de doubler les champs RepeatedType et d'ajoute le mm type
             ->add('password',RepeatedType::class,[
                 'type'=>PasswordType::class,
                 'invalid_message'=>'le mot de passe et la confirmation doivent être identique',
@@ -44,7 +48,7 @@ class RegisterType extends AbstractType
                 'first_options'=>['label'=>'Mot de passe'],
                 'second_options'=>['label'=>'Confirmez votre mot de passe']
             ])
-            // Champ ne figurant pas l'entité grace à mapped
+            // Champ ne figurant pas l'entité grace à mapped (plus utile car utilisé dans ac RepeatedType)
             // ->add('password_confirm',PasswordType::class,[
             //     'label'=>'Confirmer votre mot de passe',
             //     'mapped'=>false,
