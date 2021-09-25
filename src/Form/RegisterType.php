@@ -20,21 +20,30 @@ class RegisterType extends AbstractType
         $builder
             ->add('firstname',TextType::class,[
                 'label'=>'Votre prénom',
-                'constraints'=> new Length(2,30),
+                'constraints'=> new Length([
+                    'min'=>2,
+                    'max'=>30,
+                ]),
                 'attr'=>[
                     'placeholder' => 'Merci de saisir votre prénom'
                 ]
             ])
             ->add('lastname',TextType::class,[
                 'label'=>'Votre nom',
-                'constraints'=> new Length(2,30),
+                'constraints'=> new Length([
+                    'min'=>2,
+                    'max'=>30,
+                ]),
                 'attr'=>[
                     'placeholder' => 'Merci de saisir votre nom'
                 ]
             ])
             ->add('email',EmailType::class,[
                 'label'=>'Votre email',
-                'constraints'=> new Length(2,60),
+                'constraints'=> new Length([
+                    'min'=>2,
+                    'max'=>60,
+                ]),
                 'attr'=>[
                     'placeholder' => 'Merci de saisir votre email'
                 ]
@@ -45,8 +54,18 @@ class RegisterType extends AbstractType
                 'invalid_message'=>'le mot de passe et la confirmation doivent être identique',
                 'label'=>'Votre mot de passe',
                 'required'=>true,
-                'first_options'=>['label'=>'Mot de passe'],
-                'second_options'=>['label'=>'Confirmez votre mot de passe']
+                'first_options'=>[
+                    'label'=>'Mot de passe',
+                    'attr'=>[
+                        'placeholder' => 'Merci de votre mot de passe'
+                        ]
+                    ],
+                'second_options'=>[
+                    'label'=>'Confirmez votre mot de passe',
+                    'attr'=>[
+                            'placeholder' => 'Confirmer votre mot de passe'
+                        ]
+                    ]
             ])
             // Champ ne figurant pas l'entité grace à mapped (plus utile car utilisé dans ac RepeatedType)
             // ->add('password_confirm',PasswordType::class,[
