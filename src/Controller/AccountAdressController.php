@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Classe\Cart;
 use App\Entity\Adress;
 use App\Form\AdressType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,7 +29,7 @@ class AccountAdressController extends AbstractController
     /**
      * @Route("/compte/ajouter-une-adresse", name="account_adress_to_add")
      */
-    public function add(Request $request): Response
+    public function add(Cart $cart, Request $request): Response
     {
         // pas besoin rechercher les adresses via user, elles sont liées et stockées ds app
         $adresses = new Adress();
@@ -41,7 +42,13 @@ class AccountAdressController extends AbstractController
             // Figer la donnée avec doctrine
             $this->entityManager->persist($adresses);
             $this->entityManager->flush();
-            return $this->redirectToRoute('account_adress');
+            // si donnée ds panier et pas d'adresse
+            if($cart->get()){
+                return $this->redirectToRoute('order');
+            }else{
+                // a partir du bo du client on crée l'adresse et pas de redirection commande
+                return $this->redirectToRoute('account_adress');
+            }
         }
         return $this->render('account/adress_form.html.twig',[
             'form'=> $form->createView()
