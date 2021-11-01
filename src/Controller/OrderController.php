@@ -7,6 +7,7 @@ use App\Classe\Cart;
 use App\Entity\Order;
 use App\Form\OrderType;
 use App\Entity\OrderDetails;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,7 +40,7 @@ class OrderController extends AbstractController
         ]);
     }
     /**
-     * @Route("/commande/recapitulatif", name="order_recap")
+     * @Route("/commande/recapitulatif", name="order_recap", methods={"POST"})
      */
     public function add(Cart $cart, Request $request): Response
     {
@@ -71,24 +72,28 @@ class OrderController extends AbstractController
             $order->setDelivery($delivery_content);
             // la commande est au stade pas payée
             $order->setIsPaid(0);
+            // prépare les données
+            $this->entityManager->persist($order);
+            // enregistrer mes produits
+            foreach ($cart->getFull() as $product) {
+                $orderDetails = new OrderDetails();
+                $orderDetails->setMyOrder($order);
+                $orderDetails->setProduct($product['product']->getName());
+                $orderDetails->setQuantity($product['quantity']);
+                $orderDetails->setPrice($product['product']->getPrice());
+                $orderDetails->setTotal($product['product']->getPrice() * $product['quantity']);
+                $this->entityManager->persist($orderDetails);
+            // enregistrer mes produits
+            }
+            // save les données en bdd
+            $this->entityManager->flush();
+            return $this->render('order/add.html.twig',[
+                'cart' =>$cart->getFull(),
+                'carrier' => $carriers,
+                'delivery' =>$delivery_content
+            ]);
         }
-        // prépare les données
-        $this->entityManager->persist($order);
-        // enregistrer mes produits
-        foreach ($cart->getFull() as $product) {
-            $orderDetails = new OrderDetails();
-            $orderDetails->setMyOrder($order);
-            $orderDetails->setProduct($product['product']->getName());
-            $orderDetails->setQuantity($product['quantity']);
-            $orderDetails->setPrice($product['product']->getPrice());
-            $orderDetails->setTotal($product['product']->getPrice() * $product['quantity']);
-            $this->entityManager->persist($orderDetails);
-        // enregistrer mes produits
-        }
-        // save les données en bdd
-        $this->entityManager->flush();
-        return $this->render('order/add.html.twig',[
-            'cart' =>$cart->getFull()
-        ]);
+        // redirection si pas de post
+        return $this->redirectToRoute('cart');
     }
 }

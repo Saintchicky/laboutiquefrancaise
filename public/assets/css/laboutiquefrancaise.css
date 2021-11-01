@@ -45,7 +45,7 @@ body{
 }
 .form-check{
     background-color: #f4f8ff;
-    padding: 20px;
+    padding: 20px!important;
     margin-top: 7px;
 }
 .col-form-label{
