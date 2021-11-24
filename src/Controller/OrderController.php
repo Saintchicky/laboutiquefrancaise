@@ -91,11 +91,12 @@ class OrderController extends AbstractController
             // enregistrer mes produits
             }
             // save les données en bdd
-            //  $this->entityManager->flush();
+            $this->entityManager->flush();
             return $this->render('order/add.html.twig',[
                 'cart' =>$cart->getFull(),
                 'carrier' => $carriers,
-                'delivery' =>$delivery_content
+                'delivery' =>$delivery_content,
+                'reference' =>$order->getReference()
             ]);
         }
         // redirection si pas de post
