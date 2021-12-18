@@ -27,10 +27,10 @@ class OrderSuccessController extends AbstractController
             return $this->redirectToRoute('home');
         }
         // si isPais est à 0
-        if(!$order->getIsPaid()){
+        if($order->getState() == 0){
             // vider le panier
             $cart->remove();
-            $order->setIsPaid(1);
+            $order->setState(1);
             $this->entityManager->flush();
             $mail = new Mail();
             $content = "Bonjour ".$order->getUser()->getFirstname()."<br>Merci pour votre commande.<br><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent non rutrum massa. Aenean dapibus venenatis elementum. Vivamus auctor at dolor vel pulvinar. Fusce vitae porttitor turpis. Nulla sed erat malesuada, tempor ipsum eget, tempus nisi. Nulla sed lorem sagittis, ullamcorper metus vitae, tempus augue. Nunc viverra felis leo, a varius nunc molestie eu. Pellentesque cursus, augue ut rhoncus venenatis, neque massa aliquet nunc, a porta purus est pulvinar lorem. Morbi at feugiat mauris. Duis porttitor ante non ornare maximus. Nam fringilla ligula quam, id laoreet velit elementum sed. Morbi aliquet hendrerit diam, ut semper justo. Praesent sit amet dui ex. Mauris massa velit, placerat vel magna vitae, eleifend rutrum arcu.";
