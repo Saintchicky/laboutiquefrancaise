@@ -46,11 +46,13 @@ class ProductController extends AbstractController
     {
         // symfony retrouve le slug si dans entity 
         $product = $this->entityManager->getRepository(Product::class)->findOneBySlug($slug);
+        $products = $this->entityManager->getRepository(Product::class)->findByIsBest(1);
         if(!$product){
             return $this->redirectRoute('products');
         }
         return $this->render('product/show.html.twig',[
-            'product'=> $product
+            'product'=> $product,
+            'products'=>$products
         ]);
     }
 }
